@@ -13,59 +13,92 @@
             --text: #ffffff;
             --border: #2d364d;
         }
+        /* Pantalla completa sin scroll */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: var(--bg);
+        }
         body { 
             font-family: 'Segoe UI', system-ui, sans-serif; 
-            background-color: var(--bg); color: var(--text);
-            display: flex; justify-content: center; padding: 20px; margin: 0;
-            overflow-x: hidden;
+            color: var(--text);
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
         }
         .card { 
-            background: var(--card); padding: 1.5rem; border-radius: 28px; 
+            background: var(--card); 
+            padding: 1.2rem; 
+            border-radius: 28px; 
             box-shadow: 0 25px 60px rgba(0,0,0,0.6); 
-            width: 100%; max-width: 600px; border: 1px solid var(--border);
+            width: 90%; 
+            max-width: 500px; 
+            border: 1px solid var(--border);
+            max-height: 98vh;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
         }
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        h2 { margin: 0; font-weight: 800; color: var(--accent); font-size: 1.1rem; text-transform: uppercase; }
+        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        h2 { margin: 0; font-weight: 800; color: var(--accent); font-size: 0.9rem; text-transform: uppercase; }
         
         .lang-select {
             background: #1e253a; color: white; border: 1px solid var(--border);
             padding: 4px 8px; border-radius: 8px; font-size: 0.7rem; outline: none;
         }
 
-        /* Contenedor de la Resistencia 3D */
         .resistor-display {
             background: radial-gradient(circle, #1e253a 0%, #0b0f1a 100%);
-            padding: 50px 10px; border-radius: 20px; margin-bottom: 25px;
-            display: flex; justify-content: center; align-items: center;
+            padding: 20px 10px; border-radius: 20px; margin-bottom: 15px;
+            display: flex; 
+            flex-direction: column;
+            justify-content: center; align-items: center;
             border: 1px solid var(--border);
             box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            position: relative;
         }
-        .resistor-svg { width: 100%; height: auto; max-width: 420px; overflow: visible; }
+        #valor-texto { 
+            font-size: 2.2rem; 
+            font-weight: 900; 
+            color: #fff; 
+            text-shadow: 0 0 15px rgba(0,210,255,0.6);
+            z-index: 10;
+        }
+        #detalle-texto { 
+            color: #8da2c0; 
+            font-size: 0.75rem; 
+            font-weight: 600; 
+            margin-bottom: 10px;
+            z-index: 10;
+            opacity: 0.9;
+        }
+        .resistor-svg { width: 100%; height: auto; max-width: 380px; overflow: visible; }
 
-        .config-pills { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .config-pills { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; }
         .pill { 
-            padding: 10px 15px; border: 1px solid var(--border); border-radius: 50px;
-            cursor: pointer; transition: 0.3s; font-size: 0.75rem; font-weight: bold;
+            padding: 8px 12px; border: 1px solid var(--border); border-radius: 50px;
+            cursor: pointer; transition: 0.3s; font-size: 0.7rem; font-weight: bold;
             color: #8da2c0; background: rgba(255,255,255,0.02);
         }
         .pill.active { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 0 15px rgba(0,210,255,0.3); }
         
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .control-group { display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 0.65rem; color: var(--accent); font-weight: 800; text-transform: uppercase; padding-left: 5px; }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 5px; }
+        .control-group { display: flex; flex-direction: column; gap: 4px; }
+        label { font-size: 0.6rem; color: var(--accent); font-weight: 800; text-transform: uppercase; padding-left: 5px; }
         
         .custom-select {
-            display: flex; align-items: center; gap: 10px;
+            display: flex; align-items: center; gap: 8px;
             background: #1e253a; border-radius: 12px; border: 1px solid var(--border);
-            padding: 12px; cursor: pointer; transition: 0.2s;
+            padding: 10px; cursor: pointer; transition: 0.2s;
         }
         .custom-select:active { transform: scale(0.98); background: #252d45; }
-        .selected-text { flex: 1; font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .selected-text { flex: 1; font-size: 0.8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         .color-block-sm {
-            width: 24px; height: 24px; border-radius: 6px;
+            width: 20px; height: 20px; border-radius: 5px;
             border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 0 5px rgba(0,0,0,0.3);
         }
 
         .picker-overlay {
@@ -75,36 +108,26 @@
         }
         .picker-sheet {
             width: 100%; background: #161b2c; border-top: 2px solid var(--accent);
-            max-height: 80vh; overflow-y: auto; border-radius: 30px 30px 0 0;
+            max-height: 70vh; overflow-y: auto; border-radius: 30px 30px 0 0;
             padding: 20px; animation: slideUp 0.3s ease-out;
+            box-sizing: border-box;
         }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
         .picker-title { 
-            font-size: 0.9rem; font-weight: 800; color: var(--accent);
-            text-transform: uppercase; margin-bottom: 20px; text-align: center;
+            font-size: 0.8rem; font-weight: 800; color: var(--accent);
+            text-transform: uppercase; margin-bottom: 15px; text-align: center;
             display: block;
         }
-        .option-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .option-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
         .option-item {
-            display: flex; align-items: center; gap: 15px; padding: 15px;
-            background: #1e253a; border-radius: 15px; border: 1px solid var(--border);
+            display: flex; align-items: center; gap: 12px; padding: 12px;
+            background: #1e253a; border-radius: 12px; border: 1px solid var(--border);
             cursor: pointer;
         }
         .option-item:active { background: var(--accent); color: black; }
-        .option-item .color-block {
-            width: 30px; height: 30px; border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .option-name { font-weight: bold; font-size: 1rem; }
-
-        .result-area { 
-            margin-top: 25px; text-align: center; padding: 20px;
-            border-top: 1px solid var(--border); background: rgba(255,255,255,0.02);
-            border-radius: 20px;
-        }
-        #valor-texto { font-size: 2.5rem; font-weight: 900; display: block; color: #fff; }
-        #detalle-texto { color: #8da2c0; font-size: 0.85rem; margin-top: 5px; font-weight: 600; }
+        .option-item .color-block { width: 25px; height: 25px; border-radius: 6px; }
+        .option-name { font-weight: bold; font-size: 0.9rem; }
     </style>
 </head>
 <body>
@@ -125,24 +148,17 @@
         <div id="pill-6" class="pill" onclick="setBands(6)">6 BANDS</div>
     </div>
 
-    <!-- Muestra de Resistencia Realista 3D -->
     <div class="resistor-display">
+        <span id="valor-texto">-- Ω</span>
+        <span id="detalle-texto">Select colors</span>
         <svg class="resistor-svg" viewBox="0 0 400 120">
             <defs>
-                <!-- Sombra proyectada -->
                 <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
                     <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
                     <feOffset dx="0" dy="8" result="offsetblur" />
-                    <feComponentTransfer>
-                        <feFuncA type="linear" slope="0.5" />
-                    </feComponentTransfer>
-                    <feMerge>
-                        <feMergeNode />
-                        <feMergeNode in="SourceGraphic" />
-                    </feMerge>
+                    <feComponentTransfer><feFuncA type="linear" slope="0.5" /></feComponentTransfer>
+                    <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
                 </filter>
-
-                <!-- Gradiente para el cuerpo cilíndrico -->
                 <linearGradient id="body3D" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" style="stop-color:#9e8354" />
                     <stop offset="20%" style="stop-color:#dfc38c" />
@@ -150,22 +166,16 @@
                     <stop offset="60%" style="stop-color:#dfc38c" />
                     <stop offset="100%" style="stop-color:#8a7146" />
                 </linearGradient>
-
-                <!-- Gradiente para los cables metálicos -->
                 <linearGradient id="wire3D" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" style="stop-color:#555" />
                     <stop offset="50%" style="stop-color:#ccc" />
                     <stop offset="100%" style="stop-color:#444" />
                 </linearGradient>
-
-                <!-- Capa de brillo superior (Specular Highlight) -->
                 <linearGradient id="specular" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" style="stop-color:white; stop-opacity:0" />
                     <stop offset="20%" style="stop-color:white; stop-opacity:0.3" />
                     <stop offset="35%" style="stop-color:white; stop-opacity:0" />
                 </linearGradient>
-
-                <!-- Sombra para las bandas para dar profundidad -->
                 <linearGradient id="bandShadow" x1="0%" y1="0%" x2="0%" y2="100%">
                     <stop offset="0%" style="stop-color:black; stop-opacity:0.4" />
                     <stop offset="20%" style="stop-color:black; stop-opacity:0" />
@@ -173,16 +183,9 @@
                     <stop offset="100%" style="stop-color:black; stop-opacity:0.5" />
                 </linearGradient>
             </defs>
-            
-            <!-- Grupo con sombra proyectada -->
             <g filter="url(#dropShadow)">
-                <!-- Cables -->
                 <rect x="0" y="56" width="400" height="8" rx="4" fill="url(#wire3D)" />
-                
-                <!-- Cuerpo de la resistencia -->
                 <path d="M 80,40 Q 80,25 100,25 L 300,25 Q 320,25 320,40 L 320,80 Q 320,95 300,95 L 100,95 Q 80,95 80,80 Z" fill="url(#body3D)" />
-                
-                <!-- Contenedores de bandas dinámicas -->
                 <g id="band-group">
                     <rect id="b1" x="105" y="25" width="20" height="70" rx="2" />
                     <rect id="b2" x="140" y="25" width="18" height="70" rx="2" />
@@ -191,8 +194,6 @@
                     <rect id="b5" x="230" y="25" width="18" height="70" rx="2" />
                     <rect id="b6" x="285" y="25" width="20" height="70" rx="2" />
                 </g>
-
-                <!-- Capa de realismo sobre las bandas (Sombra + Brillo) -->
                 <path d="M 80,40 Q 80,25 100,25 L 300,25 Q 320,25 320,40 L 320,80 Q 320,95 300,95 L 100,95 Q 80,95 80,80 Z" fill="url(#bandShadow)" style="pointer-events: none;"/>
                 <path d="M 80,40 Q 80,25 100,25 L 300,25 Q 320,25 320,40 L 320,80 Q 320,95 300,95 L 100,95 Q 80,95 80,80 Z" fill="url(#specular)" style="pointer-events: none;"/>
             </g>
@@ -201,10 +202,6 @@
 
     <div class="controls" id="inputs-container"></div>
 
-    <div class="result-area">
-        <span id="valor-texto">-- Ω</span>
-        <span id="detalle-texto">Select colors</span>
-    </div>
 </div>
 
 <div id="picker-overlay" class="picker-overlay" onclick="closePicker()">
@@ -405,7 +402,8 @@
         if(total >= 1000000) { total /= 1000000; unit = " MΩ"; }
         else if(total >= 1000) { total /= 1000; unit = " kΩ"; }
 
-        document.getElementById('valor-texto').innerText = `${total.toLocaleString(undefined, {maximumFractionDigits: 2})}${unit}`;
+        const resultStr = `${total.toLocaleString(undefined, {maximumFractionDigits: 2})}${unit}`;
+        document.getElementById('valor-texto').innerText = resultStr;
         document.getElementById('detalle-texto').innerText = `${langData.precision}: ±${tolerance}% ${ppm ? ' • ' + langData.coef + ': ' + ppm + ' ppm/K' : ''}`;
     }
 
