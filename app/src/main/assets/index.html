@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0b0f1a">
+
+
+
+    <title>Resistor Pro Realista 2026</title>
+    <style>
+        :root {
+            --bg: #0b0f1a;
+            --card: #161b2c;
+            --accent: #00d2ff;
+            --text: #ffffff;
+            --border: #2d364d;
+        }
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background-color: var(--bg); color: var(--text);
+            display: flex; justify-content: center; padding: 20px; margin: 0;
+        }
+        .card { 
+            background: var(--card); padding: 2rem; border-radius: 28px; 
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6); 
+            width: 100%; max-width: 600px; border: 1px solid var(--border);
+        }
+        h2 { text-align: center; font-weight: 800; color: var(--accent); margin-bottom: 25px; }
+
+        /* Contenedor de la Resistencia Realista */
+        .resistor-display {
+            background: radial-gradient(circle, #1e253a 0%, #0b0f1a 100%);
+            padding: 50px 20px; border-radius: 20px; margin-bottom: 30px;
+            display: flex; justify-content: center; align-items: center;
+            border: 1px solid var(--border);
+        }
+        .resistor-svg { width: 100%; height: auto; max-width: 450px; overflow: visible; }
+
+        /* Controles y UI */
+        .config-pills { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+        .pill { 
+            padding: 8px 18px; border: 1px solid var(--border); border-radius: 50px;
+            cursor: pointer; transition: 0.3s; font-size: 0.85rem; font-weight: bold;
+            color: #8da2c0;
+        }
+        .pill.active { background: var(--accent); color: #000; border-color: var(--accent); }
+        
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        label { font-size: 0.7rem; color: var(--accent); font-weight: 800; text-transform: uppercase; margin-bottom: 5px; display: block; }
+        select { 
+            width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border);
+            background: #1e253a; color: white; outline: none; cursor: pointer;
+        }
+
+        .result-area { 
+            margin-top: 30px; text-align: center; padding: 20px;
+            border-top: 1px solid var(--border);
+        }
+        #valor-texto { font-size: 2.8rem; font-weight: 900; display: block; letter-spacing: -1px; }
+        #detalle-texto { color: #8da2c0; font-size: 0.9rem; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Resistor Visualizer 2026</h2>
+    
+    <div class="config-pills">
+        <div class="pill active" onclick="setBands(4)">4 BANDAS</div>
+        <div class="pill" onclick="setBands(5)">5 BANDAS</div>
+        <div class="pill" onclick="setBands(6)">6 BANDAS</div>
+    </div>
+
+    <div class="resistor-display">
+        <svg class="resistor-svg" viewBox="0 0 400 120">
+            <defs>
+                <!-- Sombras y efectos de realismo -->
+                <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#dfc38c" />
+                    <stop offset="50%" style="stop-color:#f3e5ab" />
+                    <stop offset="100%" style="stop-color:#c4a76d" />
+                </linearGradient>
+                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="2" result="blur" />
+                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+            </defs>
+            
+            <!-- Cables metálicos con gradiente -->
+            <rect x="0" y="55" width="400" height="10" rx="5" fill="#7f8c8d" />
+            <rect x="0" y="55" width="400" height="4" rx="2" fill="#bdc3c7" />
+
+            <!-- Cuerpo de la resistencia (forma realista) -->
+            <path d="M 80,40 Q 80,25 95,25 L 305,25 Q 320,25 320,40 L 320,80 Q 320,95 305,95 L 95,95 Q 80,95 80,80 Z" fill="url(#bodyGrad)" stroke="#b39d6b" stroke-width="1"/>
+            
+            <!-- Bandas de colores (con curvatura para realismo) -->
+            <rect id="b1" x="100" y="25" width="18" height="70" fill="none" rx="2" />
+            <rect id="b2" x="135" y="25" width="16" height="70" fill="none" rx="2" />
+            <rect id="b3" x="165" y="25" width="16" height="70" fill="none" rx="2" />
+            <rect id="b4" x="195" y="25" width="16" height="70" fill="none" rx="2" />
+            <rect id="b5" x="225" y="25" width="16" height="70" fill="none" rx="2" />
+            <rect id="b6" x="280" y="25" width="18" height="70" fill="none" rx="2" />
+        </svg>
+    </div>
+
+    <div class="controls" id="inputs-container"></div>
+
+    <div class="result-area">
+        <span id="valor-texto">-- Ω</span>
+        <span id="detalle-texto">Selecciona los colores</span>
+    </div>
+</div>
+
+<script>
+    const data = [
+        { c: "Negro", v: 0, m: 1, t: 0, ppm: 250, hex: "#000000" },
+        { c: "Marrón", v: 1, m: 10, t: 1, ppm: 100, hex: "#5d3a1a" },
+        { c: "Rojo", v: 2, m: 100, t: 2, ppm: 50, hex: "#c0392b" },
+        { c: "Naranja", v: 3, m: 1000, t: 0.05, ppm: 15, hex: "#e67e22" },
+        { c: "Amarillo", v: 4, m: 10000, t: 0.02, ppm: 25, hex: "#f1c40f" },
+        { c: "Verde", v: 5, m: 100000, t: 0.5, ppm: 20, hex: "#27ae60" },
+        { c: "Azul", v: 6, m: 1000000, t: 0.25, ppm: 10, hex: "#2980b9" },
+        { c: "Violeta", v: 7, m: 10000000, t: 0.1, ppm: 5, hex: "#8e44ad" },
+        { c: "Gris", v: 8, m: 100000000, t: 0.01, ppm: 1, hex: "#7f8c8d" },
+        { c: "Blanco", v: 9, m: 1000000000, t: null, ppm: null, hex: "#ecf0f1" },
+        { c: "Oro", v: 0.1, m: 0.1, t: 5, ppm: null, hex: "#d4af37" },
+        { c: "Plata", v: 0.01, m: 0.01, t: 10, ppm: null, hex: "#bdc3c7" }
+    ];
+
+    let currentBands = 4;
+
+    function setBands(n) {
+        currentBands = n;
+        document.querySelectorAll('.pill').forEach((p, i) => p.classList.toggle('active', (i + 4) === n));
+        renderInputs();
+        calculate();
+    }
+
+    function renderInputs() {
+        const container = document.getElementById('inputs-container');
+        container.innerHTML = '';
+        const labels = {
+            4: ["1ª Cifra", "2ª Cifra", "Multiplicador", "Tolerancia"],
+            5: ["1ª Cifra", "2ª Cifra", "3ª Cifra", "Multiplicador", "Tolerancia"],
+            6: ["1ª Cifra", "2ª Cifra", "3ª Cifra", "Multiplicador", "Tolerancia", "Temp. Coef."]
+        }[currentBands];
+
+        labels.forEach((label, i) => {
+            const div = document.createElement('div');
+            div.innerHTML = `<label>${label}</label><select id="sel${i}" onchange="calculate()"></select>`;
+            container.appendChild(div);
+            const select = div.querySelector('select');
+            data.forEach((color, index) => {
+                if (label.includes("Multiplicador") && color.m === null) return;
+                if (label.includes("Tolerancia") && color.t === null) return;
+                if (label.includes("Temp") && color.ppm === null) return;
+                select.add(new Option(color.c, index));
+            });
+            if(i === 0) select.value = 1; 
+            if(i === labels.length - 2) select.value = 2; 
+            if(i === labels.length - 1) select.value = 10;
+        });
+    }
+
+    function calculate() {
+        let digits = "";
+        let multiplier = 1, tolerance = 0, ppm = null;
+        for(let i=1; i<=6; i++) document.getElementById('b'+i).setAttribute('fill', 'none');
+
+        for(let i=0; i < currentBands; i++) {
+            const val = data[document.getElementById('sel'+i).value];
+            let vIdx = i + 1;
+            if(currentBands === 4) { if(i === 2) vIdx = 4; if(i === 3) vIdx = 6; }
+            else if(currentBands === 5) { if(i === 4) vIdx = 6; }
+            
+            const bandEl = document.getElementById('b' + vIdx);
+            bandEl.setAttribute('fill', val.hex);
+            bandEl.style.filter = "drop-shadow(0px 0px 2px rgba(0,0,0,0.5))";
+
+            if(i < (currentBands === 4 ? 2 : 3)) digits += val.v;
+            else if (i === (currentBands === 4 ? 2 : 3)) multiplier = val.m;
+            else if (i === (currentBands === 4 ? 3 : 4)) tolerance = val.t;
+            else if (i === 5) ppm = val.ppm;
+        }
+
+        let total = parseFloat(digits) * multiplier;
+        let unit = " Ω";
+        if(total >= 1000000) { total /= 1000000; unit = " MΩ"; }
+        else if(total >= 1000) { total /= 1000; unit = " kΩ"; }
+
+        document.getElementById('valor-texto').innerText = `${total.toLocaleString(undefined, {maximumFractionDigits: 2})}${unit}`;
+        document.getElementById('detalle-texto').innerText = `Precisión: ±${tolerance}% ${ppm ? '• Coeficiente: ' + ppm + ' ppm/K' : ''}`;
+    }
+
+    setBands(4);
+</script>
+</body>
+</html>
