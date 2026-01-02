@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0b0f1a">
     <title>Smart Resistance Calculator Pro</title>
     <style>
@@ -12,201 +12,346 @@
             --accent: #00d2ff;
             --text: #ffffff;
             --border: #2d364d;
+            --warning: #ff4d4d;
         }
-        /* Pantalla completa sin scroll */
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         html, body {
             height: 100%;
+            width: 100%;
             margin: 0;
             padding: 0;
             overflow: hidden;
             background-color: var(--bg);
         }
+
         body { 
             font-family: 'Segoe UI', system-ui, sans-serif; 
             color: var(--text);
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-        }
-        .card { 
-            background: var(--card); 
-            padding: 1.2rem; 
-            border-radius: 28px; 
-            box-shadow: 0 25px 60px rgba(0,0,0,0.6); 
-            width: 90%; 
-            max-width: 500px; 
-            border: 1px solid var(--border);
-            max-height: 98vh;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
             display: flex;
-            flex-direction: column;
-            box-sizing: border-box;
-        }
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        h2 { margin: 0; font-weight: 800; color: var(--accent); font-size: 0.9rem; text-transform: uppercase; }
-        
-        .lang-select {
-            background: #1e253a; color: white; border: 1px solid var(--border);
-            padding: 4px 8px; border-radius: 8px; font-size: 0.7rem; outline: none;
+            justify-content: center;
         }
 
-        .resistor-display {
-            background: radial-gradient(circle, #1e253a 0%, #0b0f1a 100%);
-            padding: 20px 10px; border-radius: 20px; margin-bottom: 15px;
+        .app-container { 
+            background: var(--card); 
+            width: 100%;
+            height: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            position: relative;
+        }
+
+        .header-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 10px; 
+            flex-shrink: 0;
+        }
+        
+        .mode-select {
+            background: #1e253a; color: var(--accent); border: 1px solid var(--accent);
+            padding: 6px 12px; border-radius: 10px; font-size: 0.8rem; font-weight: 800;
+            outline: none; cursor: pointer; text-transform: uppercase;
+        }
+
+        .lang-select {
+            background: #1e253a; color: white; border: 1px solid var(--border);
+            padding: 6px 10px; border-radius: 10px; font-size: 0.75rem; outline: none;
+        }
+
+        .display-panel {
+            background: radial-gradient(circle at center, #1e253a 0%, #0b0f1a 100%);
+            padding: 15px;
+            border-radius: 24px;
+            margin-bottom: 12px;
             display: flex; 
             flex-direction: column;
             justify-content: center; align-items: center;
             border: 1px solid var(--border);
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.7);
             position: relative;
+            transition: all 0.3s ease;
+            flex: 1.5; 
+            min-height: 180px;
         }
-        #valor-texto { 
-            font-size: 2.2rem; 
+
+        #valor-texto, #esr-val-display { 
+            font-size: 2.8rem; 
             font-weight: 900; 
             color: #fff; 
-            text-shadow: 0 0 15px rgba(0,210,255,0.6);
-            z-index: 10;
+            text-shadow: 0 0 20px rgba(0,210,255,0.7);
+            margin-bottom: 0px;
+            text-align: center;
         }
-        #detalle-texto { 
-            color: #8da2c0; 
-            font-size: 0.75rem; 
-            font-weight: 600; 
-            margin-bottom: 10px;
-            z-index: 10;
-            opacity: 0.9;
-        }
-        .resistor-svg { width: 100%; height: auto; max-width: 380px; overflow: visible; }
+        #esr-val-display { font-size: 1.6rem; }
 
-        .config-pills { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; }
-        .pill { 
-            padding: 8px 12px; border: 1px solid var(--border); border-radius: 50px;
-            cursor: pointer; transition: 0.3s; font-size: 0.7rem; font-weight: bold;
-            color: #8da2c0; background: rgba(255,255,255,0.02);
+        #detalle-texto, #esr-info-display { 
+            color: #8da2c0; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            margin-bottom: 5px;
+            opacity: 0.9;
+            text-align: center;
         }
-        .pill.active { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 0 15px rgba(0,210,255,0.3); }
+
+        #warning-texto {
+            color: var(--warning);
+            font-size: 0.7rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            background: rgba(255, 77, 77, 0.1);
+            padding: 4px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--warning);
+            display: none;
+            z-index: 10;
+        }
+
+        .resistor-svg { width: 100%; height: auto; max-width: 420px; overflow: visible; }
+
+        .swap-btn {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            background: rgba(0,210,255,0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .config-pills { 
+            display: flex; justify-content: center; gap: 8px; 
+            margin-bottom: 12px; flex-shrink: 0;
+        }
+        .pill { 
+            flex: 1;
+            padding: 10px 0; border: 1px solid var(--border); border-radius: 14px;
+            cursor: pointer; transition: 0.3s; font-size: 0.75rem; font-weight: bold;
+            color: #8da2c0; background: rgba(255,255,255,0.03);
+            text-align: center;
+        }
+        .pill.active { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 0 15px rgba(0,210,255,0.4); }
         
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 5px; }
-        .control-group { display: flex; flex-direction: column; gap: 4px; }
+        .controls { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; 
+            padding-bottom: 10px; flex: 1; 
+        }
+        .control-group { display: flex; flex-direction: column; gap: 4px; justify-content: center; }
         label { font-size: 0.6rem; color: var(--accent); font-weight: 800; text-transform: uppercase; padding-left: 5px; }
         
         .custom-select {
             display: flex; align-items: center; gap: 8px;
-            background: #1e253a; border-radius: 12px; border: 1px solid var(--border);
-            padding: 10px; cursor: pointer; transition: 0.2s;
+            background: #1e253a; border-radius: 14px; border: 1px solid var(--border);
+            padding: 10px; cursor: pointer;
         }
-        .custom-select:active { transform: scale(0.98); background: #252d45; }
-        .selected-text { flex: 1; font-size: 0.8rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .selected-text { flex: 1; font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .color-block-sm { width: 22px; height: 22px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); }
+
+        .esr-container {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            min-height: 0;
+        }
+        .esr-table-wrapper {
+            flex: 2.5;
+            overflow: auto;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: rgba(0,0,0,0.2);
+            margin-top: 5px;
+        }
+        table { 
+            width: 100%; 
+            border-collapse: separate; 
+            border-spacing: 0; 
+            font-size: 0.75rem; 
+            color: #8da2c0; 
+        }
         
-        .color-block-sm {
-            width: 20px; height: 20px; border-radius: 5px;
-            border: 1px solid rgba(255,255,255,0.2);
+        th, td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(255,255,255,0.03);
+            min-width: 70px;
+            cursor: pointer;
         }
+
+        th { 
+            position: sticky; top: 0; background: #1e253a; color: var(--accent); 
+            font-weight: 800; border-bottom: 1px solid var(--border); z-index: 20; 
+        }
+        
+        th:first-child, td:first-child {
+            position: sticky; left: 0; background: #1e253a; z-index: 15;
+            width: 60px; min-width: 60px; border-right: 2px solid var(--border);
+            font-weight: 800;
+        }
+        th:first-child { z-index: 30; }
+
+        td:hover { background: rgba(0,210,255,0.1); color: #fff; }
+        tr:nth-child(even) td:not(:first-child) { background: rgba(255,255,255,0.02); }
+
+        .esr-label-small { font-size: 0.6rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+        .esr-range-container { display: flex; align-items: center; gap: 15px; }
+        .esr-range-item { display: flex; flex-direction: column; align-items: center; }
 
         .picker-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); display: none; z-index: 1000;
-            align-items: flex-end; backdrop-filter: blur(4px);
+            background: rgba(0,0,0,0.8); display: none; z-index: 1000;
+            align-items: flex-end; backdrop-filter: blur(8px);
         }
         .picker-sheet {
-            width: 100%; background: #161b2c; border-top: 2px solid var(--accent);
-            max-height: 70vh; overflow-y: auto; border-radius: 30px 30px 0 0;
-            padding: 20px; animation: slideUp 0.3s ease-out;
-            box-sizing: border-box;
+            width: 100%; background: #161b2c; border-top: 3px solid var(--accent);
+            max-height: 90vh; 
+            overflow-y: auto; border-radius: 32px 32px 0 0;
+            padding: 10px 20px 20px 20px; animation: slideUp 0.3s ease-out;
         }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-        .picker-title { 
-            font-size: 0.8rem; font-weight: 800; color: var(--accent);
-            text-transform: uppercase; margin-bottom: 15px; text-align: center;
-            display: block;
-        }
-        .option-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+        .picker-title { font-size: 0.9rem; font-weight: 800; color: var(--accent); text-transform: uppercase; margin-bottom: 15px; text-align: center; display: block; }
+        
+        .option-grid { display: grid; grid-template-columns: 1fr; gap: 4px; }
         .option-item {
-            display: flex; align-items: center; gap: 12px; padding: 12px;
+            display: flex; align-items: center; gap: 12px; padding: 8px 15px;
             background: #1e253a; border-radius: 12px; border: 1px solid var(--border);
             cursor: pointer;
         }
         .option-item:active { background: var(--accent); color: black; }
-        .option-item .color-block { width: 25px; height: 25px; border-radius: 6px; }
-        .option-name { font-weight: bold; font-size: 0.9rem; }
+        .option-item .color-block { width: 30px; height: 22px; border-radius: 6px; }
+        .option-name { font-weight: bold; font-size: 0.95rem; }
+        
+        .back-btn {
+            background: var(--accent); color: #000; padding: 10px; border-radius: 12px;
+            text-align: center; font-weight: 800; font-size: 0.75rem; margin-bottom: 15px;
+            cursor: pointer; text-transform: uppercase;
+        }
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
     </style>
 </head>
 <body>
 
-<div class="card">
+<div class="app-container">
     <div class="header-row">
-        <h2 id="title-text">Smart Resistor PRO</h2>
-        <select class="lang-select" onchange="changeLanguage(this.value)">
-            <option value="es">ESPAÑOL</option>
-            <option value="en">ENGLISH</option>
-            <option value="zh">中文</option>
+        <label for="app-mode" class="sr-only">App Mode</label>
+        <select id="app-mode" class="mode-select" onchange="toggleMode(this.value)">
+            <option value="resistor">Resistance Mode</option>
+            <option value="esr">ESR Mode</option>
+        </select>
+        <label for="lang-select" class="sr-only">Language</label>
+        <select id="lang-select" class="lang-select" onchange="changeLanguage(this.value)">
+            <option value="es">ES</option>
+            <option value="en">EN</option>
+            <option value="zh">ZH</option>
         </select>
     </div>
-    
-    <div class="config-pills">
-        <div id="pill-4" class="pill active" onclick="setBands(4)">4 BANDS</div>
-        <div id="pill-5" class="pill" onclick="setBands(5)">5 BANDS</div>
-        <div id="pill-6" class="pill" onclick="setBands(6)">6 BANDS</div>
-    </div>
 
-    <div class="resistor-display">
-        <span id="valor-texto">-- Ω</span>
-        <span id="detalle-texto">Select colors</span>
-        <svg class="resistor-svg" viewBox="0 0 400 120">
-            <defs>
-                <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
-                    <feOffset dx="0" dy="8" result="offsetblur" />
-                    <feComponentTransfer><feFuncA type="linear" slope="0.5" /></feComponentTransfer>
-                    <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
-                </filter>
-                <linearGradient id="body3D" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style="stop-color:#9e8354" />
-                    <stop offset="20%" style="stop-color:#dfc38c" />
-                    <stop offset="40%" style="stop-color:#f3e5ab" />
-                    <stop offset="60%" style="stop-color:#dfc38c" />
-                    <stop offset="100%" style="stop-color:#8a7146" />
-                </linearGradient>
-                <linearGradient id="wire3D" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style="stop-color:#555" />
-                    <stop offset="50%" style="stop-color:#ccc" />
-                    <stop offset="100%" style="stop-color:#444" />
-                </linearGradient>
-                <linearGradient id="specular" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style="stop-color:white; stop-opacity:0" />
-                    <stop offset="20%" style="stop-color:white; stop-opacity:0.3" />
-                    <stop offset="35%" style="stop-color:white; stop-opacity:0" />
-                </linearGradient>
-                <linearGradient id="bandShadow" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style="stop-color:black; stop-opacity:0.4" />
-                    <stop offset="20%" style="stop-color:black; stop-opacity:0" />
-                    <stop offset="80%" style="stop-color:black; stop-opacity:0" />
-                    <stop offset="100%" style="stop-color:black; stop-opacity:0.5" />
-                </linearGradient>
-            </defs>
-            <g filter="url(#dropShadow)">
-                <rect x="0" y="56" width="400" height="8" rx="4" fill="url(#wire3D)" />
-                <path d="M 80,40 Q 80,25 100,25 L 300,25 Q 320,25 320,40 L 320,80 Q 320,95 300,95 L 100,95 Q 80,95 80,80 Z" fill="url(#body3D)" />
-                <g id="band-group">
-                    <rect id="b1" x="105" y="25" width="20" height="70" rx="2" />
-                    <rect id="b2" x="140" y="25" width="18" height="70" rx="2" />
-                    <rect id="b3" x="170" y="25" width="18" height="70" rx="2" />
-                    <rect id="b4" x="200" y="25" width="18" height="70" rx="2" />
-                    <rect id="b5" x="230" y="25" width="18" height="70" rx="2" />
-                    <rect id="b6" x="285" y="25" width="20" height="70" rx="2" />
+    <div id="resistor-ui" style="display: flex; flex-direction: column; height: 100%;">
+        <div class="config-pills">
+            <div id="pill-4" class="pill active" onclick="setBands(4)">4 BANDS</div>
+            <div id="pill-5" class="pill" onclick="setBands(5)">5 BANDS</div>
+            <div id="pill-6" class="pill" onclick="setBands(6)">6 BANDS</div>
+        </div>
+
+        <div class="display-panel">
+            <span id="valor-texto">-- Ω</span>
+            <span id="detalle-texto">Select colors</span>
+            <div id="warning-texto"></div>
+            
+            <svg id="resistor-svg" class="resistor-svg" viewBox="0 0 400 120">
+                <defs>
+                    <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+                        <feOffset dx="0" dy="8" result="offsetblur" />
+                        <feMerge><feMergeNode /><feMergeNode in="SourceGraphic" /></feMerge>
+                    </filter>
+                    <linearGradient id="body3D" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:#9e8354" />
+                        <stop offset="20%" style="stop-color:#dfc38c" />
+                        <stop offset="40%" style="stop-color:#f3e5ab" />
+                        <stop offset="60%" style="stop-color:#dfc38c" />
+                        <stop offset="100%" style="stop-color:#8a7146" />
+                    </linearGradient>
+                    <linearGradient id="specular" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" style="stop-color:white; stop-opacity:0" />
+                        <stop offset="20%" style="stop-color:white; stop-opacity:0.3" />
+                        <stop offset="35%" style="stop-color:white; stop-opacity:0" />
+                    </linearGradient>
+                </defs>
+                <g filter="url(#dropShadow)">
+                    <rect x="0" y="56" width="400" height="8" rx="4" fill="#7f8c8d" />
+                    <path d="M 80,40 Q 80,25 100,25 L 300,25 Q 320,25 320,40 L 320,80 Q 320,95 300,95 L 100,95 Q 80,95 80,80 Z" fill="url(#body3D)" />
+                    <g id="band-group">
+                        <rect id="b1" x="105" y="25" width="20" height="70" rx="2" />
+                        <rect id="b2" x="140" y="25" width="18" height="70" rx="2" />
+                        <rect id="b3" x="170" y="25" width="18" height="70" rx="2" />
+                        <rect id="b4" x="200" y="25" width="18" height="70" rx="2" />
+                        <rect id="b5" x="230" y="25" width="18" height="70" rx="2" />
+                        <rect id="b6" x="285" y="25" width="20" height="70" rx="2" />
+                    </g>
+                    <path d="M 80,40 Q 80,25 100,25 L 300,25 Q 320,25 320,40 L 320,80 Q 320,95 300,95 L 100,95 Q 80,95 80,80 Z" fill="url(#specular)" style="pointer-events: none;"/>
                 </g>
-                <path d="M 80,40 Q 80,25 100,25 L 300,25 Q 320,25 320,40 L 320,80 Q 320,95 300,95 L 100,95 Q 80,95 80,80 Z" fill="url(#bandShadow)" style="pointer-events: none;"/>
-                <path d="M 80,40 Q 80,25 100,25 L 300,25 Q 320,25 320,40 L 320,80 Q 320,95 300,95 L 100,95 Q 80,95 80,80 Z" fill="url(#specular)" style="pointer-events: none;"/>
-            </g>
-        </svg>
+            </svg>
+
+            <button class="swap-btn" onclick="reverseBands()">⇅ Invertir</button>
+        </div>
+        
+        <div class="controls" id="inputs-container"></div>
     </div>
 
-    <div class="controls" id="inputs-container"></div>
-
+    <div id="esr-ui" class="esr-container">
+        <div class="display-panel" style="flex: 0.5; min-height: 100px;">
+            <div id="esr-val-display">-- Ω</div>
+            <span id="esr-info-display">Select Capacitance & Voltage</span>
+        </div>
+        <div class="controls" style="flex: 0.4;">
+            <div class="control-group">
+                <label id="lbl-cap">Capacitance</label>
+                <div class="custom-select" onclick="openEsrCapPicker()">
+                    <span id="sel-cap-text" class="selected-text">-- µF</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label id="lbl-vol">Voltage</label>
+                <div class="custom-select" onclick="openEsrVolPicker()">
+                    <span id="sel-vol-text" class="selected-text">-- V</span>
+                </div>
+            </div>
+        </div>
+        <div class="esr-table-wrapper">
+            <table>
+                <thead id="esr-head"></thead>
+                <tbody id="esr-body"></tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 <div id="picker-overlay" class="picker-overlay" onclick="closePicker()">
     <div class="picker-sheet" onclick="event.stopPropagation()">
-        <span id="picker-title" class="picker-title">Seleccionar Color</span>
+        <div id="picker-nav" style="display: none;" class="back-btn" onclick="showCapCategories()">← Volver a Rangos</div>
+        <span id="picker-title" class="picker-title">Selection</span>
         <div id="option-grid" class="option-grid"></div>
     </div>
 </div>
@@ -214,37 +359,83 @@
 <script>
     const translations = {
         es: {
-            title: "Smart Resistance Calculator Pro",
+            title: "Calculadora de Resistencias",
+            esrTitle: "TABLA ESR",
+            modeRes: "Modo Resistencia",
+            modeEsr: "Modo ESR",
             bands: " BANDAS",
             labels: ["1ª Cifra", "2ª Cifra", "3ª Cifra", "Multiplicador", "Tolerancia", "Coef. Temp."],
             colors: ["Negro", "Marrón", "Rojo", "Naranja", "Amarillo", "Verde", "Azul", "Violeta", "Gris", "Blanco", "Oro", "Plata"],
             precision: "Precisión",
             coef: "Coeficiente",
-            select: "Selecciona los colores"
+            select: "Selecciona los colores",
+            cap: "Capacitancia",
+            vol: "Voltaje",
+            range: "Rango de Capacitancia",
+            maxEsr: "Rango ESR Sugerido",
+            min: "MINIMO",
+            max: "MAXIMO",
+            back: "← Volver a Rangos",
+            warning: "⚠️ ¿Lectura invertida?"
         },
         en: {
-            title: "Smart Resistance Calculator Pro",
+            title: "Resistance Calculator",
+            esrTitle: "ESR TABLE",
+            modeRes: "Resistance Mode",
+            modeEsr: "ESR Mode",
             bands: " BANDS",
             labels: ["1st Digit", "2nd Digit", "3rd Digit", "Multiplier", "Tolerance", "Temp. Coef."],
             colors: ["Black", "Brown", "Red", "Orange", "Yellow", "Green", "Blue", "Violet", "Grey", "White", "Gold", "Silver"],
             precision: "Precision",
             coef: "Coefficient",
-            select: "Select colors"
+            select: "Select colors",
+            cap: "Capacitance",
+            vol: "Voltage",
+            range: "Capacitance Range",
+            maxEsr: "Suggested ESR Range",
+            min: "MINIMUM",
+            max: "MAXIMUM",
+            back: "← Back to Ranges",
+            warning: "⚠️ Possible reverse reading?"
         },
         zh: {
-            title: "智能电阻计算器专业版",
+            title: "电阻计算器",
+            esrTitle: "ESR 表",
+            modeRes: "电阻模式",
+            modeEsr: "ESR 模式",
             bands: " 色环",
             labels: ["第1位", "第2位", "第3位", "倍率", "误差", "温度系数"],
             colors: ["黑色", "棕色", "红色", "橙色", "黄色", "绿色", "蓝色", "紫色", "灰色", "白色", "金色", "银色"],
             precision: "精度",
             coef: "系数",
-            select: "选择颜色"
+            select: "选择颜色",
+            cap: "电容",
+            vol: "电压",
+            maxEsr: "建议 ESR 范围",
+            min: "最小",
+            max: "最大",
+            back: "← 返回范围",
+            warning: "⚠️ 可能是反向读取？"
         }
     };
+
+    const capRanges = [
+        { label: "0.1µF - 1µF", values: ["0.1", "0.22", "0.33", "0.47", "0.68", "1"] },
+        { label: "2.2µF - 100µF", values: ["2.2", "3.3", "4.7", "6.8", "10", "22", "33", "47", "68", "100"] },
+        { label: "220µF - 1000µF", values: ["220", "330", "470", "680", "1000"] },
+        { label: "2200µF - 10000µF", values: ["2200", "3300", "4700", "6800", "10000"] },
+        { label: "22000µF - 100000µF", values: ["22000", "33000", "47000", "68000", "100000"] }
+    ];
+
+    const initialCapValues = ["0.01", "0.1", "0.22", "0.33", "0.47", "2.2", "3.3", "4.7", "10", "22", "33", "47", "100", "220", "330", "470", "1000", "2200", "3300", "4700"];
+    const initialVolValues = ["10V", "16V", "25V", "35V", "50V", "63V", "100V", "250V"];
+    const esrVolValues = ["6.3V", "10V", "16V", "25V", "35V", "50V", "63V", "100V", "160V", "250V", "400V", "450V"];
 
     let currentLang = 'es';
     let currentBands = 4;
     let selectedValues = [2, 2, 10, 10, 0, 0];
+    let selectedCapVal = "";
+    let selectedVolVal = "";
 
     const data = [
         { v: 0, m: 1, t: 0, ppm: 250, hex: "#000000" },
@@ -257,53 +448,180 @@
         { v: 7, m: 10000000, t: 0.1, ppm: 5, hex: "#8e44ad" },
         { v: 8, m: 100000000, t: 0.01, ppm: 1, hex: "#7f8c8d" },
         { v: 9, m: 1000000000, t: null, ppm: null, hex: "#ecf0f1" },
-        { v: 0.1, m: 0.1, t: 5, ppm: null, hex: "#d4af37" },
-        { v: 0.01, m: 0.01, t: 10, ppm: null, hex: "#bdc3c7" }
+        { v: 0.1, m: 0.1, t: 5, ppm: 500, hex: "#d4af37" },
+        { v: 0.01, m: 0.01, t: 10, ppm: 1000, hex: "#bdc3c7" }
     ];
+
+    function getEsrLimit(cap, vol) {
+        const c = parseFloat(cap);
+        const v = parseFloat(vol);
+        let base = 0.02;
+        if (c < 0.1) base = 50 / c;
+        else if (c < 1) base = 20 / c;
+        else if (c < 10) base = 10 / c;
+        else if (c < 100) base = 50 / c;
+        else if (c < 1000) base = 100 / c;
+        else base = 150 / c;
+        let voltFactor = 1 + (v / 100);
+        return (base * voltFactor).toFixed(2);
+    }
+
+    function toggleMode(mode) {
+        document.getElementById('resistor-ui').style.display = (mode === 'resistor') ? 'flex' : 'none';
+        document.getElementById('esr-ui').style.display = (mode === 'esr') ? 'flex' : 'none';
+        if(mode === 'resistor') calculate();
+        else renderTable(initialCapValues, initialVolValues);
+    }
 
     function changeLanguage(lang) {
         currentLang = lang;
-        document.getElementById('title-text').innerText = translations[lang].title;
-        document.getElementById('pill-4').innerText = "4" + translations[lang].bands;
-        document.getElementById('pill-5').innerText = "5" + translations[lang].bands;
-        document.getElementById('pill-6').innerText = "6" + translations[lang].bands;
-        renderInputs();
-        calculate();
+        const l = translations[lang];
+        document.getElementById('pill-4').innerText = "4" + l.bands;
+        document.getElementById('pill-5').innerText = "5" + l.bands;
+        document.getElementById('pill-6').innerText = "6" + l.bands;
+        document.getElementById('lbl-cap').innerText = l.cap;
+        document.getElementById('lbl-vol').innerText = l.vol;
+        const modeSel = document.getElementById('app-mode');
+        modeSel.options[0].text = l.modeRes;
+        modeSel.options[1].text = l.modeEsr;
+        renderInputs(); calculate(); updateEsrCalculation();
     }
 
     function setBands(n) {
         currentBands = n;
         document.querySelectorAll('.pill').forEach((p, i) => p.classList.toggle('active', (i + 4) === n));
-        renderInputs();
-        calculate();
+        renderInputs(); calculate();
+    }
+
+    function openEsrCapPicker() {
+        showCapCategories();
+        document.getElementById('picker-overlay').style.display = 'flex';
+    }
+
+    function showCapCategories() {
+        const grid = document.getElementById('option-grid');
+        const title = document.getElementById('picker-title');
+        const nav = document.getElementById('picker-nav');
+        title.innerText = translations[currentLang].cap;
+        nav.style.display = 'none';
+        grid.innerHTML = '';
+        capRanges.forEach((range, idx) => {
+            const item = document.createElement('div');
+            item.className = 'option-item';
+            item.innerHTML = `<span class="option-name">${range.label}</span>`;
+            item.onclick = () => showCapValues(idx);
+            grid.appendChild(item);
+        });
+    }
+
+    function showCapValues(rangeIdx) {
+        const grid = document.getElementById('option-grid');
+        const nav = document.getElementById('picker-nav');
+        nav.style.display = 'block';
+        grid.innerHTML = '';
+        capRanges[rangeIdx].values.forEach(val => {
+            const item = document.createElement('div');
+            item.className = 'option-item';
+            item.innerHTML = `<span class="option-name">${val} µF</span>`;
+            item.onclick = () => {
+                selectedCapVal = val;
+                document.getElementById('sel-cap-text').innerText = val + ' µF';
+                closePicker();
+                renderTable(capRanges[rangeIdx].values, esrVolValues);
+                updateEsrCalculation();
+            };
+            grid.appendChild(item);
+        });
+    }
+
+    function openEsrVolPicker() {
+        const grid = document.getElementById('option-grid');
+        const title = document.getElementById('picker-title');
+        const nav = document.getElementById('picker-nav');
+        title.innerText = translations[currentLang].vol;
+        nav.style.display = 'none';
+        grid.innerHTML = '';
+        document.getElementById('picker-overlay').style.display = 'flex';
+        esrVolValues.forEach(val => {
+            const item = document.createElement('div');
+            item.className = 'option-item';
+            item.innerHTML = `<span class="option-name">${val}</span>`;
+            item.onclick = () => {
+                selectedVolVal = val;
+                document.getElementById('sel-vol-text').innerText = val;
+                closePicker();
+                updateEsrCalculation();
+            };
+            grid.appendChild(item);
+        });
+    }
+
+    function closePicker() { document.getElementById('picker-overlay').style.display = 'none'; }
+
+    function renderTable(values, volsToShow) {
+        const esrHead = document.getElementById('esr-head');
+        let headHtml = '<tr><th>µF</th>';
+        volsToShow.forEach(v => headHtml += `<th>${v}</th>`);
+        headHtml += '</tr>';
+        esrHead.innerHTML = headHtml;
+        const esrBody = document.getElementById('esr-body');
+        esrBody.innerHTML = '';
+        values.forEach(cap => {
+            const tr = document.createElement('tr');
+            const tdCap = document.createElement('td'); tdCap.innerText = cap; tdCap.style.fontWeight = "800"; tr.appendChild(tdCap);
+            volsToShow.forEach(vol => {
+                const td = document.createElement('td'); 
+                td.innerText = getEsrLimit(cap, vol);
+                td.onclick = () => {
+                    selectedCapVal = cap;
+                    selectedVolVal = vol;
+                    document.getElementById('sel-cap-text').innerText = cap + ' µF';
+                    document.getElementById('sel-vol-text').innerText = vol;
+                    updateEsrCalculation();
+                };
+                tr.appendChild(td);
+            });
+            esrBody.appendChild(tr);
+        });
+    }
+
+    function updateEsrCalculation() {
+        if(!selectedCapVal || !selectedVolVal) return;
+        const maxEsr = getEsrLimit(selectedCapVal, selectedVolVal);
+        const langData = translations[currentLang];
+        document.getElementById('esr-val-display').innerHTML = `
+            <div class="esr-range-container">
+                <div class="esr-range-item"><span class="esr-label-small">${langData.min}</span><span>0.01 Ω</span></div>
+                <div style="color: #555; font-size: 1.2rem;">-</div>
+                <div class="esr-range-item"><span class="esr-label-small">${langData.max}</span><span>${maxEsr} Ω</span></div>
+            </div>
+        `;
+        document.getElementById('esr-info-display').innerText = `${langData.maxEsr}: ${selectedCapVal}µF / ${selectedVolVal}`;
     }
 
     function renderInputs() {
         const container = document.getElementById('inputs-container');
         const langData = translations[currentLang];
         container.innerHTML = '';
-        
         let activeLabels = [];
+        let isSpecialMode = (currentBands >= 5 && (selectedValues[2] == 10 || selectedValues[2] == 11));
+
         if(currentBands === 4) activeLabels = [0, 1, 3, 4];
         else if(currentBands === 5) {
-            if (selectedValues[2] == 10 || selectedValues[2] == 11) activeLabels = [0, 1, 3, 4, 5];
+            if (isSpecialMode) activeLabels = [0, 1, 3, 4, 5];
             else activeLabels = [0, 1, 2, 3, 4];
-        } else activeLabels = [0, 1, 2, 3, 4, 5];
+        } else {
+            if (isSpecialMode) activeLabels = [0, 1, 3, 4, 5, 5];
+            else activeLabels = [0, 1, 2, 3, 4, 5];
+        }
 
         activeLabels.forEach((labelIdx, i) => {
             const label = langData.labels[labelIdx];
             const valIdx = selectedValues[i];
             const colorData = data[valIdx];
-
             const div = document.createElement('div');
             div.className = 'control-group';
-            div.innerHTML = `
-                <label>${label}</label>
-                <div class="custom-select" onclick="openPicker(${i}, ${labelIdx})">
-                    <div class="color-block-sm" style="background-color: ${colorData.hex}"></div>
-                    <span class="selected-text">${langData.colors[valIdx]}</span>
-                </div>
-            `;
+            div.innerHTML = `<label>${label}</label><div class="custom-select" onclick="openPicker(${i}, ${labelIdx})"><div class="color-block-sm" style="background-color: ${colorData.hex}"></div><span class="selected-text">${langData.colors[valIdx]}</span></div>`;
             container.appendChild(div);
         });
     }
@@ -312,98 +630,62 @@
         const overlay = document.getElementById('picker-overlay');
         const grid = document.getElementById('option-grid');
         const title = document.getElementById('picker-title');
-        const langData = translations[currentLang];
-        
-        title.innerText = langData.labels[labelIdx];
+        title.innerText = translations[currentLang].labels[labelIdx];
         grid.innerHTML = '';
         overlay.style.display = 'flex';
-
         data.forEach((color, index) => {
-            if (labelIdx === 0 && (index === 10 || index === 11)) return;
-            const isDigit = (labelIdx === 0 || labelIdx === 1 || labelIdx === 2);
-            if (isDigit && (index === 10 || index === 11) && !(currentBands === 5 && labelIdx === 2)) return;
             if (labelIdx === 3 && color.m === null) return;
             if (labelIdx === 4 && color.t === null) return;
-            if (labelIdx === 5 && color.ppm === null) return;
-
+            if (labelIdx === 5 && color.ppm === null && (index < 10)) return;
             const item = document.createElement('div');
             item.className = 'option-item';
-            item.innerHTML = `
-                <div class="color-block" style="background-color: ${color.hex}"></div>
-                <span class="option-name">${langData.colors[index]}</span>
-            `;
-            item.onclick = () => {
-                selectedValues[inputIdx] = index;
-                closePicker();
-                renderInputs();
-                calculate();
-            };
+            item.innerHTML = `<div class="color-block" style="background-color: ${color.hex}"></div><span class="option-name">${translations[currentLang].colors[index]}</span>`;
+            item.onclick = () => { selectedValues[inputIdx] = index; closePicker(); renderInputs(); calculate(); };
             grid.appendChild(item);
         });
     }
 
-    function closePicker() {
-        document.getElementById('picker-overlay').style.display = 'none';
+    function reverseBands() {
+        const currentActive = selectedValues.slice(0, currentBands).reverse();
+        for(let i=0; i<currentBands; i++) selectedValues[i] = currentActive[i];
+        renderInputs();
+        calculate();
     }
 
     function calculate() {
         const langData = translations[currentLang];
-        let digits = "";
-        let multiplier = 1, tolerance = 0, ppm = null;
-        for(let i=1; i<=6; i++) document.getElementById('b'+i).setAttribute('fill', 'none');
-
-        let isSpecialMode = (currentBands === 5 || currentBands === 6) && (selectedValues[2] == 10 || selectedValues[2] == 11);
+        let digits = ""; let multiplier = 1, tolerance = 0, ppm = null;
+        for(let i=1; i<=6; i++) { const el = document.getElementById('b'+i); if(el) el.setAttribute('fill', 'none'); }
+        let isSpecialMode = (currentBands >= 5 && (selectedValues[2] == 10 || selectedValues[2] == 11));
+        
+        const b1 = selectedValues[0];
+        const bLast = selectedValues[currentBands - 1];
+        const warningEl = document.getElementById('warning-texto');
+        
+        if (data[bLast].t === null && (b1 === 1 || b1 === 2)) {
+            warningEl.innerText = langData.warning;
+            warningEl.style.display = 'block';
+        } else {
+            warningEl.style.display = 'none';
+        }
 
         for(let i=0; i < currentBands; i++) {
             const val = data[selectedValues[i]];
             let vIdx = i + 1;
-            
-            if(currentBands === 4) { 
-                if(i === 2) vIdx = 4; if(i === 3) vIdx = 6;
-                if(i < 2) digits += val.v;
-                else if (i === 2) multiplier = val.m;
-                else if (i === 3) tolerance = val.t;
-            }
+            if(currentBands === 4) { if(i === 2) vIdx = 4; if(i === 3) vIdx = 6; if(i < 2) digits += val.v; else if (i === 2) multiplier = val.m; else if (i === 3) tolerance = val.t; }
             else if(currentBands === 5) {
-                if (isSpecialMode) {
-                    if(i === 2) vIdx = 4; if(i === 3) vIdx = 5; if(i === 4) vIdx = 6;
-                    if(i < 2) digits += val.v;
-                    else if (i === 2) multiplier = val.m;
-                    else if (i === 3) tolerance = val.t;
-                    else if (i === 4) ppm = val.ppm;
-                } else {
-                    if(i === 4) vIdx = 6;
-                    if(i < 3) digits += val.v;
-                    else if (i === 3) multiplier = val.m;
-                    else if (i === 4) tolerance = val.t;
-                }
+                if (isSpecialMode) { if(i === 2) vIdx = 4; if(i === 3) vIdx = 5; if(i === 4) vIdx = 6; if(i < 2) digits += val.v; else if (i === 2) multiplier = val.m; else if (i === 3) tolerance = val.t; else if (i === 4) ppm = val.ppm; }
+                else { if(i === 4) vIdx = 6; if(i < 3) digits += val.v; else if (i === 3) multiplier = val.m; else if (i === 4) tolerance = val.t; }
             }
             else if(currentBands === 6) {
-                if (isSpecialMode) {
-                    if(i === 2) vIdx = 4; if(i === 3) vIdx = 5; if(i === 4) vIdx = 6; if(i === 5) vIdx = 6;
-                    if(i < 2) digits += val.v;
-                    else if (i === 2) multiplier = val.m;
-                    else if (i === 3) tolerance = val.t;
-                    else if (i === 4 || i === 5) ppm = val.ppm;
-                } else {
-                    if(i < 3) digits += val.v;
-                    else if (i === 3) multiplier = val.m;
-                    else if (i === 4) tolerance = val.t;
-                    else if (i === 5) ppm = val.ppm;
-                }
+                if (isSpecialMode) { if(i < 2) digits += val.v; else if (i === 2) multiplier = val.m; else if (i === 3) tolerance = val.t; else if (i === 4 || i === 5) ppm = val.ppm; }
+                else { if(i < 3) digits += val.v; else if (i === 3) multiplier = val.m; else if (i === 4) tolerance = val.t; else if (i === 5) ppm = val.ppm; }
             }
-            
-            const bandEl = document.getElementById('b' + vIdx);
-            if (bandEl) bandEl.setAttribute('fill', val.hex);
+            const bandEl = document.getElementById('b' + vIdx); if (bandEl) bandEl.setAttribute('fill', val.hex);
         }
-
         let total = parseFloat(digits) * multiplier;
-        let unit = " Ω";
-        if(total >= 1000000) { total /= 1000000; unit = " MΩ"; }
-        else if(total >= 1000) { total /= 1000; unit = " kΩ"; }
-
-        const resultStr = `${total.toLocaleString(undefined, {maximumFractionDigits: 2})}${unit}`;
-        document.getElementById('valor-texto').innerText = resultStr;
+        let unit = " Ω"; if(total >= 1000000) { total /= 1000000; unit = " MΩ"; } else if(total >= 1000) { total /= 1000; unit = " kΩ"; }
+        document.getElementById('valor-texto').innerText = `${total.toLocaleString(undefined, {maximumFractionDigits: 2})}${unit}`;
         document.getElementById('detalle-texto').innerText = `${langData.precision}: ±${tolerance}% ${ppm ? ' • ' + langData.coef + ': ' + ppm + ' ppm/K' : ''}`;
     }
 
