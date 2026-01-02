@@ -13,6 +13,7 @@
             --text: #ffffff;
             --border: #2d364d;
             --warning: #ff4d4d;
+            --panel-bg: radial-gradient(circle at center, #1e253a 0%, #0b0f1a 100%);
         }
         
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -55,17 +56,18 @@
         
         .mode-select {
             background: #1e253a; color: var(--accent); border: 1px solid var(--accent);
-            padding: 6px 12px; border-radius: 10px; font-size: 0.8rem; font-weight: 800;
+            padding: 4px 8px; border-radius: 8px; font-size: 0.7rem; font-weight: 800;
             outline: none; cursor: pointer; text-transform: uppercase;
+            transition: all 0.3s ease;
         }
 
         .lang-select {
             background: #1e253a; color: white; border: 1px solid var(--border);
-            padding: 6px 10px; border-radius: 10px; font-size: 0.75rem; outline: none;
+            padding: 4px 6px; border-radius: 8px; font-size: 0.65rem; outline: none;
         }
 
         .display-panel {
-            background: radial-gradient(circle at center, #1e253a 0%, #0b0f1a 100%);
+            background: var(--panel-bg);
             padding: 15px;
             border-radius: 24px;
             margin-bottom: 12px;
@@ -75,38 +77,95 @@
             border: 1px solid var(--border);
             box-shadow: inset 0 0 30px rgba(0,0,0,0.7);
             position: relative;
-            transition: all 0.3s ease;
-            flex: 1.5; 
-            min-height: 180px;
+            transition: all 0.4s ease;
+            flex: 1.6; 
+            min-height: 200px;
+            overflow: hidden;
+            width: 100%;
         }
 
-        #valor-texto, #esr-val-display { 
-            font-size: 2.8rem; 
+        #valor-texto { 
+            font-size: clamp(2rem, 10vw, 3.5rem); 
             font-weight: 900; 
             color: #fff; 
-            text-shadow: 0 0 20px rgba(0,210,255,0.7);
-            margin-bottom: 0px;
+            text-shadow: 0 0 25px var(--accent);
+            margin-bottom: 5px;
+            text-align: center;
+            width: 100%;
+            white-space: nowrap;
+        }
+
+        #esr-val-display {
+            font-size: clamp(1.8rem, 9vw, 2.8rem); 
+            font-weight: 900; 
+            color: #fff; 
+            text-shadow: 0 0 30px var(--accent);
+            text-align: center;
+            line-height: 1;
+            margin: 5px 0;
+            width: 100%;
+        }
+
+        #detalle-texto { 
+            color: #8da2c0; 
+            font-size: clamp(0.9rem, 4vw, 1.2rem);
+            font-weight: 600; 
+            margin-bottom: 8px;
             text-align: center;
         }
-        #esr-val-display { font-size: 1.6rem; }
 
-        #detalle-texto, #esr-info-display { 
-            color: #8da2c0; 
-            font-size: 0.85rem; 
-            font-weight: 600; 
-            margin-bottom: 5px;
-            opacity: 0.9;
+        .esr-info-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .esr-spec-text {
+            font-size: clamp(0.9rem, 4vw, 1.3rem);
+            color: #fff;
+            font-weight: 800;
+            letter-spacing: 1px;
             text-align: center;
+        }
+
+        .esr-tolerance-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            background: rgba(255,255,255,0.05);
+            padding: 6px 15px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            max-width: 90%;
+        }
+
+        .esr-tolerance-label {
+            font-size: clamp(0.55rem, 2vw, 0.7rem);
+            color: var(--accent);
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+
+        .esr-tolerance-range {
+            font-size: clamp(0.8rem, 3.5vw, 1.1rem);
+            color: #fff;
+            font-weight: 800;
+            white-space: nowrap;
         }
 
         #warning-texto {
             color: var(--warning);
-            font-size: 0.7rem;
+            font-size: 0.85rem;
             font-weight: 800;
             margin-bottom: 10px;
             text-transform: uppercase;
             background: rgba(255, 77, 77, 0.1);
-            padding: 4px 10px;
+            padding: 6px 12px;
             border-radius: 8px;
             border: 1px solid var(--warning);
             display: none;
@@ -117,17 +176,21 @@
 
         .swap-btn {
             position: absolute;
-            bottom: 10px;
+            bottom: 12px;
             right: 15px;
-            background: rgba(0,210,255,0.1);
+            background: rgba(255,255,255,0.05);
             border: 1px solid var(--accent);
             color: var(--accent);
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 0.65rem;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.75rem;
             font-weight: 800;
             text-transform: uppercase;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.3s;
         }
 
         .config-pills { 
@@ -137,7 +200,7 @@
         .pill { 
             flex: 1;
             padding: 10px 0; border: 1px solid var(--border); border-radius: 14px;
-            cursor: pointer; transition: 0.3s; font-size: 0.75rem; font-weight: bold;
+            cursor: pointer; transition: 0.3s; font-size: 0.85rem; font-weight: 800;
             color: #8da2c0; background: rgba(255,255,255,0.03);
             text-align: center;
         }
@@ -147,16 +210,37 @@
             display: grid; grid-template-columns: 1fr 1fr; gap: 10px; 
             padding-bottom: 10px; flex: 1; 
         }
-        .control-group { display: flex; flex-direction: column; gap: 4px; justify-content: center; }
-        label { font-size: 0.6rem; color: var(--accent); font-weight: 800; text-transform: uppercase; padding-left: 5px; }
-        
-        .custom-select {
-            display: flex; align-items: center; gap: 8px;
-            background: #1e253a; border-radius: 14px; border: 1px solid var(--border);
-            padding: 10px; cursor: pointer;
+
+        .controls-esr {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            padding-bottom: 10px;
+            flex-shrink: 0;
         }
-        .selected-text { flex: 1; font-size: 0.85rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .color-block-sm { width: 22px; height: 22px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); }
+
+        .control-group { display: flex; flex-direction: column; gap: 6px; justify-content: center; }
+        .controls-esr .control-group { gap: 4px; }
+        
+        label { font-size: 0.75rem; color: var(--accent); font-weight: 800; text-transform: uppercase; padding-left: 5px; letter-spacing: 0.5px; transition: color 0.3s; }
+        .controls-esr label { font-size: 0.6rem; }
+
+        .custom-select {
+            display: flex; align-items: center; gap: 10px;
+            background: #1e253a; border-radius: 14px; border: 1px solid var(--border);
+            padding: 12px; cursor: pointer; transition: 0.3s;
+        }
+        .controls-esr .custom-select {
+            padding: 8px 6px;
+            border-radius: 10px;
+            gap: 4px;
+        }
+
+        .selected-text { flex: 1; font-size: 1rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .controls-esr .selected-text { font-size: 0.8rem; }
+
+        .color-block-sm { width: 24px; height: 24px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); }
+        .controls-esr .color-block-sm { width: 18px; height: 18px; border-radius: 4px; }
 
         .esr-container {
             flex: 1;
@@ -176,27 +260,27 @@
             width: 100%; 
             border-collapse: separate; 
             border-spacing: 0; 
-            font-size: 0.75rem; 
+            font-size: 0.8rem; 
             color: #8da2c0; 
         }
         
         th, td {
-            padding: 12px 10px;
+            padding: 8px 10px;
             text-align: center;
             border-bottom: 1px solid rgba(255,255,255,0.05);
             border-right: 1px solid rgba(255,255,255,0.03);
-            min-width: 70px;
+            min-width: 75px;
             cursor: pointer;
         }
 
         th { 
             position: sticky; top: 0; background: #1e253a; color: var(--accent); 
-            font-weight: 800; border-bottom: 1px solid var(--border); z-index: 20; 
+            font-weight: 800; border-bottom: 1px solid var(--border); z-index: 20; transition: color 0.3s;
         }
         
         th:first-child, td:first-child {
             position: sticky; left: 0; background: #1e253a; z-index: 15;
-            width: 60px; min-width: 60px; border-right: 2px solid var(--border);
+            width: 65px; min-width: 65px; border-right: 2px solid var(--border);
             font-weight: 800;
         }
         th:first-child { z-index: 30; }
@@ -204,9 +288,46 @@
         td:hover { background: rgba(0,210,255,0.1); color: #fff; }
         tr:nth-child(even) td:not(:first-child) { background: rgba(255,255,255,0.02); }
 
-        .esr-label-small { font-size: 0.6rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
-        .esr-range-container { display: flex; align-items: center; gap: 15px; }
-        .esr-range-item { display: flex; flex-direction: column; align-items: center; }
+        .esr-label-small { font-size: clamp(0.6rem, 2vw, 0.8rem); color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 4px; font-weight: 900; transition: color 0.3s; }
+        .esr-range-item { display: flex; flex-direction: column; align-items: center; width: 100%; }
+
+        .info-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.05);
+            border: 1.5px solid var(--accent);
+            color: var(--accent);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1rem;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 0 10px rgba(0,210,255,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: none; z-index: 2000;
+            align-items: center; justify-content: center; backdrop-filter: blur(10px);
+            padding: 20px;
+        }
+        .modal-content {
+            background: #161b2c; border: 2px solid var(--accent);
+            border-radius: 24px; padding: 25px; max-width: 500px; width: 100%;
+            max-height: 80vh; overflow-y: auto;
+            box-shadow: 0 0 40px rgba(0,210,255,0.2);
+            transition: border-color 0.3s;
+        }
+        .modal-title { color: var(--accent); font-weight: 800; font-size: 1.3rem; margin-bottom: 15px; text-transform: uppercase; display: block; border-bottom: 1px solid var(--border); padding-bottom: 10px; transition: color 0.3s; }
+        .modal-text { color: #fff; line-height: 1.6; font-size: 0.95rem; }
+        .modal-close { background: var(--accent); color: #000; padding: 10px 20px; border-radius: 12px; font-weight: 800; text-align: center; margin-top: 20px; cursor: pointer; text-transform: uppercase; transition: background-color 0.3s; }
 
         .picker-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -218,24 +339,25 @@
             max-height: 90vh; 
             overflow-y: auto; border-radius: 32px 32px 0 0;
             padding: 10px 20px 20px 20px; animation: slideUp 0.3s ease-out;
+            transition: border-color 0.3s;
         }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .picker-title { font-size: 0.9rem; font-weight: 800; color: var(--accent); text-transform: uppercase; margin-bottom: 15px; text-align: center; display: block; }
+        .picker-title { font-size: 1rem; font-weight: 800; color: var(--accent); text-transform: uppercase; margin-bottom: 15px; text-align: center; display: block; transition: color 0.3s; }
         
-        .option-grid { display: grid; grid-template-columns: 1fr; gap: 4px; }
+        .option-grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
         .option-item {
-            display: flex; align-items: center; gap: 12px; padding: 8px 15px;
-            background: #1e253a; border-radius: 12px; border: 1px solid var(--border);
+            display: flex; align-items: center; gap: 15px; padding: 12px 20px;
+            background: #1e253a; border-radius: 14px; border: 1px solid var(--border);
             cursor: pointer;
         }
         .option-item:active { background: var(--accent); color: black; }
-        .option-item .color-block { width: 30px; height: 22px; border-radius: 6px; }
-        .option-name { font-weight: bold; font-size: 0.95rem; }
+        .option-item .color-block { width: 35px; height: 26px; border-radius: 8px; }
+        .option-name { font-weight: bold; font-size: 1.1rem; }
         
         .back-btn {
-            background: var(--accent); color: #000; padding: 10px; border-radius: 12px;
-            text-align: center; font-weight: 800; font-size: 0.75rem; margin-bottom: 15px;
-            cursor: pointer; text-transform: uppercase;
+            background: var(--accent); color: #000; padding: 12px; border-radius: 12px;
+            text-align: center; font-weight: 800; font-size: 0.85rem; margin-bottom: 15px;
+            cursor: pointer; text-transform: uppercase; transition: background-color 0.3s;
         }
         .sr-only {
             position: absolute;
@@ -254,11 +376,16 @@
 
 <div class="app-container">
     <div class="header-row">
-        <label for="app-mode" class="sr-only">App Mode</label>
-        <select id="app-mode" class="mode-select" onchange="toggleMode(this.value)">
-            <option value="resistor">Resistance Mode</option>
-            <option value="esr">ESR Mode</option>
-        </select>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <select id="app-mode" class="mode-select" onchange="toggleMode(this.value)">
+                <option value="resistor">Resistance Mode</option>
+                <option value="esr">ESR Mode</option>
+            </select>
+            <select id="esr-calc-mode" class="lang-select" style="display: none; border-color: var(--accent); color: var(--accent);" onchange="updateEsrCalculation(); renderTable(initialCapValues, esrVolValues);">
+                <option value="formula">Fórmula</option>
+                <option value="matrix">Matriz</option>
+            </select>
+        </div>
         <label for="lang-select" class="sr-only">Language</label>
         <select id="lang-select" class="lang-select" onchange="changeLanguage(this.value)">
             <option value="es">ES</option>
@@ -276,7 +403,7 @@
 
         <div class="display-panel">
             <span id="valor-texto">-- Ω</span>
-            <span id="detalle-texto">Select colors</span>
+            <span id="detalle-texto">Selecciona los colores</span>
             <div id="warning-texto"></div>
             
             <svg id="resistor-svg" class="resistor-svg" viewBox="0 0 400 120">
@@ -314,28 +441,35 @@
                 </g>
             </svg>
 
-            <button class="swap-btn" onclick="reverseBands()">⇅ Invertir</button>
+            <button id="swap-btn" class="swap-btn" onclick="reverseBands()">⇅ Invertir</button>
         </div>
         
         <div class="controls" id="inputs-container"></div>
     </div>
 
     <div id="esr-ui" class="esr-container">
-        <div class="display-panel" style="flex: 0.5; min-height: 100px;">
+        <div class="display-panel">
+            <div id="info-btn" class="info-btn" onclick="openInfoModal()">?</div>
             <div id="esr-val-display">-- Ω</div>
-            <span id="esr-info-display">Select Capacitance & Voltage</span>
+            <div id="esr-info-display" class="esr-info-container">Selecciona Cap. y Voltaje</div>
         </div>
-        <div class="controls" style="flex: 0.4;">
+        <div class="controls-esr">
             <div class="control-group">
-                <label id="lbl-cap">Capacitance</label>
+                <label id="lbl-cap">Capacitancia</label>
                 <div class="custom-select" onclick="openEsrCapPicker()">
                     <span id="sel-cap-text" class="selected-text">-- µF</span>
                 </div>
             </div>
             <div class="control-group">
-                <label id="lbl-vol">Voltage</label>
+                <label id="lbl-vol">Voltaje</label>
                 <div class="custom-select" onclick="openEsrVolPicker()">
                     <span id="sel-vol-text" class="selected-text">-- V</span>
+                </div>
+            </div>
+            <div class="control-group">
+                <label id="lbl-freq">Frecuencia</label>
+                <div class="custom-select" onclick="openEsrFreqPicker()">
+                    <span id="sel-freq-text" class="selected-text">100kHz</span>
                 </div>
             </div>
         </div>
@@ -349,10 +483,18 @@
 </div>
 
 <div id="picker-overlay" class="picker-overlay" onclick="closePicker()">
-    <div class="picker-sheet" onclick="event.stopPropagation()">
+    <div class="picker-sheet" id="picker-sheet" onclick="event.stopPropagation()">
         <div id="picker-nav" style="display: none;" class="back-btn" onclick="showCapCategories()">← Volver a Rangos</div>
-        <span id="picker-title" class="picker-title">Selection</span>
+        <span id="picker-title" class="picker-title">Selección</span>
         <div id="option-grid" class="option-grid"></div>
+    </div>
+</div>
+
+<div id="modal-overlay" class="modal-overlay" onclick="closeInfoModal()">
+    <div class="modal-content" id="modal-content" onclick="event.stopPropagation()">
+        <span id="modal-title" class="modal-title">Descripción del Modo</span>
+        <div id="modal-text" class="modal-text"></div>
+        <div class="modal-close" id="modal-close-btn" onclick="closeInfoModal()">Cerrar</div>
     </div>
 </div>
 
@@ -371,12 +513,23 @@
             select: "Selecciona los colores",
             cap: "Capacitancia",
             vol: "Voltaje",
+            freq: "Frecuencia",
             range: "Rango de Capacitancia",
-            maxEsr: "Rango ESR Sugerido",
+            maxEsr: "ESR MAXIMO",
             min: "MINIMO",
             max: "MAXIMO",
             back: "← Volver a Rangos",
-            warning: "⚠️ ¿Lectura invertida?"
+            warning: "⚠️ ¿Lectura invertida?",
+            toleranceLabel: "TOLERANCIA ±20%",
+            swap: "⇅ Invertir",
+            descFormula: "<b>Modo Fórmula:</b> Utiliza un algoritmo dinámico que estima el ESR basándose en la capacidad y el voltaje nominal. Ideal para valores no estandarizados. Se aplican factores de corrección por frecuencia (ej. el ESR aumenta a frecuencias bajas como 120Hz).",
+            descMatrix: "<b>Modo Matriz:</b> Utiliza una tabla de valores fijos extraída de manuales técnicos de fabricantes. Es más precisa para componentes comunes, pero limitada a los valores exactos de la tabla. También aplica el factor de corrección por frecuencia seleccionado.",
+            modalTitle: "Descripción del Modo",
+            modalClose: "Cerrar",
+            esrPlaceholder: "Selecciona Cap. y Voltaje",
+            calcFormula: "Fórmula",
+            calcMatrix: "Matriz",
+            selection: "Selección"
         },
         en: {
             title: "Resistance Calculator",
@@ -391,12 +544,23 @@
             select: "Select colors",
             cap: "Capacitance",
             vol: "Voltage",
+            freq: "Frequency",
             range: "Capacitance Range",
-            maxEsr: "Suggested ESR Range",
+            maxEsr: "MAXIMUM ESR",
             min: "MINIMUM",
             max: "MAXIMUM",
             back: "← Back to Ranges",
-            warning: "⚠️ Possible reverse reading?"
+            warning: "⚠️ Possible reverse reading?",
+            toleranceLabel: "TOLERANCE ±20%",
+            swap: "⇅ Reverse",
+            descFormula: "<b>Formula Mode:</b> Uses a dynamic algorithm to estimate ESR based on capacitance and rated voltage. Ideal for non-standard values. Frequency correction factors are applied (e.g., ESR increases at lower frequencies like 120Hz).",
+            descMatrix: "<b>Matrix Mode:</b> Uses a fixed value table from manufacturer technical manuals. More accurate for common components but limited to exact table values. Also applies the selected frequency correction factor.",
+            modalTitle: "Mode Description",
+            modalClose: "Close",
+            esrPlaceholder: "Select Cap. and Voltage",
+            calcFormula: "Formula",
+            calcMatrix: "Matrix",
+            selection: "Selection"
         },
         zh: {
             title: "电阻计算器",
@@ -411,11 +575,22 @@
             select: "选择颜色",
             cap: "电容",
             vol: "电压",
+            freq: "频率",
             maxEsr: "建议 ESR 范围",
             min: "最小",
             max: "最大",
             back: "← 返回范围",
-            warning: "⚠️ 可能是反向读取？"
+            warning: "⚠️ 可能是反向读取？",
+            toleranceLabel: "容差 ±20%",
+            swap: "⇅ 反轉",
+            descFormula: "<b>公式模式:</b> 使用基于电容和额定电压的动态算法。适用于非标值。应用 frecuencia 修正系数。",
+            descMatrix: "<b>矩阵模式:</b> 使用来自技术手册 de la tabla. 常见元件更准确。",
+            modalTitle: "模式描述",
+            modalClose: "关闭",
+            esrPlaceholder: "选择电容和电压",
+            calcFormula: "公式",
+            calcMatrix: "矩阵",
+            selection: "选择"
         }
     };
 
@@ -427,15 +602,34 @@
         { label: "22000µF - 100000µF", values: ["22000", "33000", "47000", "68000", "100000"] }
     ];
 
-    const initialCapValues = ["0.01", "0.1", "0.22", "0.33", "0.47", "2.2", "3.3", "4.7", "10", "22", "33", "47", "100", "220", "330", "470", "1000", "2200", "3300", "4700"];
+    const initialCapValues = ["0.01", "0.1", "0.22", "0.33", "0.47", "1", "2.2", "3.3", "4.7", "10", "22", "33", "47", "100", "220", "330", "470", "1000", "2200", "3300", "4700"];
     const initialVolValues = ["10V", "16V", "25V", "35V", "50V", "63V", "100V", "250V"];
     const esrVolValues = ["6.3V", "10V", "16V", "25V", "35V", "50V", "63V", "100V", "160V", "250V", "400V", "450V"];
+    const lcrFrequencies = [
+        { label: "100Hz", factor: 8.0 },
+        { label: "120Hz", factor: 7.0 },
+        { label: "1kHz", factor: 4.0 },
+        { label: "10kHz", factor: 1.5 },
+        { label: "100kHz", factor: 1.0 }
+    ];
+
+    const esrMatrix = {
+        "10V": { "1": 5.0, "2.2": 3.0, "4.7": 2.5, "10": 2.0, "22": 1.5, "47": 1.0, "100": 0.6, "220": 0.4, "470": 0.25, "1000": 0.15, "2200": 0.1, "4700": 0.06 },
+        "16V": { "1": 4.5, "2.2": 2.8, "4.7": 2.2, "10": 1.8, "22": 1.3, "47": 0.9, "100": 0.5, "220": 0.35, "470": 0.22, "1000": 0.12, "2200": 0.08, "4700": 0.05 },
+        "25V": { "1": 4.0, "2.2": 2.5, "4.7": 2.0, "10": 1.6, "22": 1.1, "47": 0.8, "100": 0.45, "220": 0.3, "470": 0.2, "1000": 0.1, "2200": 0.07, "4700": 0.04 },
+        "35V": { "1": 3.5, "2.2": 2.2, "4.7": 1.8, "10": 1.4, "22": 1.0, "47": 0.7, "100": 0.4, "220": 0.25, "470": 0.18, "1000": 0.09, "2200": 0.06, "4700": 0.035 },
+        "50V": { "1": 3.0, "2.2": 2.0, "4.7": 1.6, "10": 1.2, "22": 0.9, "47": 0.6, "100": 0.35, "220": 0.22, "470": 0.15, "1000": 0.08, "2200": 0.05, "4700": 0.03 },
+        "63V": { "1": 2.8, "2.2": 1.8, "4.7": 1.4, "10": 1.1, "22": 0.8, "47": 0.55, "100": 0.3, "220": 0.2, "470": 0.13, "1000": 0.07, "2200": 0.045, "4700": 0.028 },
+        "100V": { "1": 2.5, "2.2": 1.6, "4.7": 1.2, "10": 1.0, "22": 0.7, "47": 0.5, "100": 0.25, "220": 0.18, "470": 0.11, "1000": 0.06, "2200": 0.04, "4700": 0.025 },
+        "250V": { "1": 2.0, "2.2": 1.4, "4.7": 1.0, "10": 0.8, "22": 0.6, "47": 0.4, "100": 0.2, "220": 0.15, "470": 0.1, "1000": 0.05, "2200": 0.035, "4700": 0.02 }
+    };
 
     let currentLang = 'es';
     let currentBands = 4;
     let selectedValues = [2, 2, 10, 10, 0, 0];
     let selectedCapVal = "";
     let selectedVolVal = "";
+    let selectedFreqIdx = 4; // Default 100kHz
 
     const data = [
         { v: 0, m: 1, t: 0, ppm: 250, hex: "#000000" },
@@ -452,7 +646,21 @@
         { v: 0.01, m: 0.01, t: 10, ppm: 1000, hex: "#bdc3c7" }
     ];
 
+    function openInfoModal() {
+        const mode = document.getElementById('esr-calc-mode').value;
+        const textEl = document.getElementById('modal-text');
+        textEl.innerHTML = (mode === 'formula') ? translations[currentLang].descFormula : translations[currentLang].descMatrix;
+        document.getElementById('modal-overlay').style.display = 'flex';
+    }
+
+    function closeInfoModal() { document.getElementById('modal-overlay').style.display = 'none'; }
+
     function getEsrLimit(cap, vol) {
+        const mode = document.getElementById('esr-calc-mode').value;
+        const freqFactor = lcrFrequencies[selectedFreqIdx].factor;
+        if (mode === 'matrix' && esrMatrix[vol] && esrMatrix[vol][cap]) {
+            return (esrMatrix[vol][cap] * freqFactor).toFixed(2);
+        }
         const c = parseFloat(cap);
         const v = parseFloat(vol);
         let base = 0.02;
@@ -463,14 +671,50 @@
         else if (c < 1000) base = 100 / c;
         else base = 150 / c;
         let voltFactor = 1 + (v / 100);
-        return (base * voltFactor).toFixed(2);
+        return (base * voltFactor * freqFactor).toFixed(2);
     }
 
     function toggleMode(mode) {
-        document.getElementById('resistor-ui').style.display = (mode === 'resistor') ? 'flex' : 'none';
-        document.getElementById('esr-ui').style.display = (mode === 'esr') ? 'flex' : 'none';
-        if(mode === 'resistor') calculate();
-        else renderTable(initialCapValues, initialVolValues);
+        const root = document.documentElement;
+        if (mode === 'resistor') {
+            updateResistorTheme();
+            document.getElementById('resistor-ui').style.display = 'flex';
+            document.getElementById('esr-ui').style.display = 'none';
+            document.getElementById('esr-calc-mode').style.display = 'none';
+            calculate();
+        } else {
+            updateEsrTheme();
+            document.getElementById('resistor-ui').style.display = 'none';
+            document.getElementById('esr-ui').style.display = 'flex';
+            document.getElementById('esr-calc-mode').style.display = 'block';
+            renderTable(initialCapValues, initialVolValues);
+        }
+    }
+
+    function updateResistorTheme() {
+        const root = document.documentElement;
+        if (currentBands === 4) {
+            root.style.setProperty('--accent', '#00d2ff');
+            root.style.setProperty('--panel-bg', 'radial-gradient(circle at center, #1e253a 0%, #0b0f1a 100%)');
+        } else if (currentBands === 5) {
+            root.style.setProperty('--accent', '#a066ff');
+            root.style.setProperty('--panel-bg', 'radial-gradient(circle at center, #251e3a 0%, #0f0b1a 100%)');
+        } else {
+            root.style.setProperty('--accent', '#ff8800');
+            root.style.setProperty('--panel-bg', 'radial-gradient(circle at center, #3a251e 0%, #1a0f0b 100%)');
+        }
+    }
+
+    function updateEsrTheme() {
+        const root = document.documentElement;
+        const calcMode = document.getElementById('esr-calc-mode').value;
+        if (calcMode === 'formula') {
+            root.style.setProperty('--accent', '#00ffaa');
+            root.style.setProperty('--panel-bg', 'radial-gradient(circle at center, #1a2c26 0%, #0b1a16 100%)');
+        } else {
+            root.style.setProperty('--accent', '#ffcc00');
+            root.style.setProperty('--panel-bg', 'radial-gradient(circle at center, #2c221a 0%, #1a140b 100%)');
+        }
     }
 
     function changeLanguage(lang) {
@@ -481,15 +725,34 @@
         document.getElementById('pill-6').innerText = "6" + l.bands;
         document.getElementById('lbl-cap').innerText = l.cap;
         document.getElementById('lbl-vol').innerText = l.vol;
+        document.getElementById('lbl-freq').innerText = l.freq;
+        document.getElementById('swap-btn').innerText = l.swap;
+        document.getElementById('modal-title').innerText = l.modalTitle;
+        document.getElementById('modal-close-btn').innerText = l.modalClose;
+        document.getElementById('picker-title').innerText = l.selection;
+        
         const modeSel = document.getElementById('app-mode');
         modeSel.options[0].text = l.modeRes;
         modeSel.options[1].text = l.modeEsr;
+        
+        const calcModeSel = document.getElementById('esr-calc-mode');
+        calcModeSel.options[0].text = l.calcFormula;
+        calcModeSel.options[1].text = l.calcMatrix;
+
+        if (!selectedValues.length || selectedValues.every(v => v === 0)) {
+             document.getElementById('detalle-texto').innerText = l.select;
+        }
+        if (!selectedCapVal || !selectedVolVal) {
+             document.getElementById('esr-info-display').innerText = l.esrPlaceholder;
+        }
+
         renderInputs(); calculate(); updateEsrCalculation();
     }
 
     function setBands(n) {
         currentBands = n;
         document.querySelectorAll('.pill').forEach((p, i) => p.classList.toggle('active', (i + 4) === n));
+        updateResistorTheme();
         renderInputs(); calculate();
     }
 
@@ -556,6 +819,29 @@
         });
     }
 
+    function openEsrFreqPicker() {
+        const grid = document.getElementById('option-grid');
+        const title = document.getElementById('picker-title');
+        const nav = document.getElementById('picker-nav');
+        title.innerText = translations[currentLang].freq;
+        nav.style.display = 'none';
+        grid.innerHTML = '';
+        document.getElementById('picker-overlay').style.display = 'flex';
+        lcrFrequencies.forEach((freq, idx) => {
+            const item = document.createElement('div');
+            item.className = 'option-item';
+            item.innerHTML = `<span class="option-name">${freq.label}</span>`;
+            item.onclick = () => {
+                selectedFreqIdx = idx;
+                document.getElementById('sel-freq-text').innerText = freq.label;
+                closePicker();
+                renderTable(initialCapValues, esrVolValues);
+                updateEsrCalculation();
+            };
+            grid.appendChild(item);
+        });
+    }
+
     function closePicker() { document.getElementById('picker-overlay').style.display = 'none'; }
 
     function renderTable(values, volsToShow) {
@@ -586,17 +872,26 @@
     }
 
     function updateEsrCalculation() {
+        updateEsrTheme();
         if(!selectedCapVal || !selectedVolVal) return;
+        const cap = parseFloat(selectedCapVal);
+        const minCap = (cap * 0.8).toLocaleString(undefined, {maximumFractionDigits: 2});
+        const maxCap = (cap * 1.2).toLocaleString(undefined, {maximumFractionDigits: 2});
         const maxEsr = getEsrLimit(selectedCapVal, selectedVolVal);
         const langData = translations[currentLang];
         document.getElementById('esr-val-display').innerHTML = `
-            <div class="esr-range-container">
-                <div class="esr-range-item"><span class="esr-label-small">${langData.min}</span><span>0.01 Ω</span></div>
-                <div style="color: #555; font-size: 1.2rem;">-</div>
-                <div class="esr-range-item"><span class="esr-label-small">${langData.max}</span><span>${maxEsr} Ω</span></div>
+            <div class="esr-range-item">
+                <span class="esr-label-small">${langData.maxEsr} @ ${lcrFrequencies[selectedFreqIdx].label}</span>
+                <span>${maxEsr} Ω</span>
             </div>
         `;
-        document.getElementById('esr-info-display').innerText = `${langData.maxEsr}: ${selectedCapVal}µF / ${selectedVolVal}`;
+        document.getElementById('esr-info-display').innerHTML = `
+            <div class="esr-spec-text">${selectedCapVal}µF / ${selectedVolVal}</div>
+            <div class="esr-tolerance-box">
+                <span class="esr-tolerance-label">${langData.toleranceLabel}</span>
+                <span class="esr-tolerance-range">${minCap}µF ~ ${maxCap}µF</span>
+            </div>
+        `;
     }
 
     function renderInputs() {
@@ -604,17 +899,9 @@
         const langData = translations[currentLang];
         container.innerHTML = '';
         let activeLabels = [];
-        let isSpecialMode = (currentBands >= 5 && (selectedValues[2] == 10 || selectedValues[2] == 11));
-
         if(currentBands === 4) activeLabels = [0, 1, 3, 4];
-        else if(currentBands === 5) {
-            if (isSpecialMode) activeLabels = [0, 1, 3, 4, 5];
-            else activeLabels = [0, 1, 2, 3, 4];
-        } else {
-            if (isSpecialMode) activeLabels = [0, 1, 3, 4, 5, 5];
-            else activeLabels = [0, 1, 2, 3, 4, 5];
-        }
-
+        else if(currentBands === 5) activeLabels = [0, 1, 2, 3, 4];
+        else activeLabels = [0, 1, 2, 3, 4, 5];
         activeLabels.forEach((labelIdx, i) => {
             const label = langData.labels[labelIdx];
             const valIdx = selectedValues[i];
@@ -656,30 +943,28 @@
         const langData = translations[currentLang];
         let digits = ""; let multiplier = 1, tolerance = 0, ppm = null;
         for(let i=1; i<=6; i++) { const el = document.getElementById('b'+i); if(el) el.setAttribute('fill', 'none'); }
-        let isSpecialMode = (currentBands >= 5 && (selectedValues[2] == 10 || selectedValues[2] == 11));
-        
         const b1 = selectedValues[0];
         const bLast = selectedValues[currentBands - 1];
         const warningEl = document.getElementById('warning-texto');
-        
         if (data[bLast].t === null && (b1 === 1 || b1 === 2)) {
             warningEl.innerText = langData.warning;
             warningEl.style.display = 'block';
         } else {
             warningEl.style.display = 'none';
         }
-
         for(let i=0; i < currentBands; i++) {
             const val = data[selectedValues[i]];
             let vIdx = i + 1;
-            if(currentBands === 4) { if(i === 2) vIdx = 4; if(i === 3) vIdx = 6; if(i < 2) digits += val.v; else if (i === 2) multiplier = val.m; else if (i === 3) tolerance = val.t; }
+            if(currentBands === 4) { 
+                if(i === 2) vIdx = 4; if(i === 3) vIdx = 6; 
+                if(i < 2) digits += val.v; else if (i === 2) multiplier = val.m; else if (i === 3) tolerance = val.t; 
+            }
             else if(currentBands === 5) {
-                if (isSpecialMode) { if(i === 2) vIdx = 4; if(i === 3) vIdx = 5; if(i === 4) vIdx = 6; if(i < 2) digits += val.v; else if (i === 2) multiplier = val.m; else if (i === 3) tolerance = val.t; else if (i === 4) ppm = val.ppm; }
-                else { if(i === 4) vIdx = 6; if(i < 3) digits += val.v; else if (i === 3) multiplier = val.m; else if (i === 4) tolerance = val.t; }
+                if(i === 4) vIdx = 6; 
+                if(i < 3) digits += val.v; else if (i === 3) multiplier = val.m; else if (i === 4) tolerance = val.t; 
             }
             else if(currentBands === 6) {
-                if (isSpecialMode) { if(i < 2) digits += val.v; else if (i === 2) multiplier = val.m; else if (i === 3) tolerance = val.t; else if (i === 4 || i === 5) ppm = val.ppm; }
-                else { if(i < 3) digits += val.v; else if (i === 3) multiplier = val.m; else if (i === 4) tolerance = val.t; else if (i === 5) ppm = val.ppm; }
+                if(i < 3) digits += val.v; else if (i === 3) multiplier = val.m; else if (i === 4) tolerance = val.t; else if (i === 5) ppm = val.ppm; 
             }
             const bandEl = document.getElementById('b' + vIdx); if (bandEl) bandEl.setAttribute('fill', val.hex);
         }
